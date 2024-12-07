@@ -1,0 +1,30 @@
+[package]
+name = "haha"
+version = "0.1.0"
+edition = "2021"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = "deny"
+nursery = "warn"
+perf = "warn"
+style = "warn"
+suspicious = "warn"
+correctness = "deny"
+unwrap_used = { level = "forbid", priority = 1 }
+enum_glob_use = { level = "deny", priority = 1 }
+missing_errors_doc = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+dbg_macro = { level = "warn", priority = 1 }
+todo = { level = "warn", priority = 1 }
+single_match = { level = "allow", priority = 127 }
+single_match_else = { level = "allow", priority = 127 }
+option-if-let-else = { level = "allow", priority = 127 }
+unused_async = { level = "warn", priority = 127 }
+no_effect_underscore_binding = { level = "allow", priority = 127 }
+
+[dependencies]
+axum = "0.7.9"
+tokio = "1.42.0"
