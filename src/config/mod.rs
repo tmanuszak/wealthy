@@ -1,18 +1,18 @@
+use color_eyre::eyre::Ok;
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Config {
     pub database: DatabaseConfig,
     pub server: ServerConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct DatabaseConfig {
     pub url: String,
-    pub port: u16,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct ServerConfig {
     pub ip: String,
     pub port: u16,

@@ -6,6 +6,7 @@ mod db;
 mod models;
 mod routes;
 mod services;
+mod state;
 mod utils;
 
 #[tokio::main]
@@ -16,24 +17,22 @@ async fn main() -> color_eyre::Result<()> {
     // Setup tracing
     tracing_subscriber::fmt::init();
 
-    // Setup Config
-    let config = config::get_config().await?;
-
-    // Initialize the db
-    let db = db::init_db(&config.database).await?;
+    let app_state = state::init_state().await?;
 
     // Build the app
     let app = Router::new()
         .merge(routes::create_routes())
-        .layer(axum::extract::Extension(db));
+        .with_state(app_state.clone());
 
-    let listener = tokio::net::TcpListener::bind((config.server.ip.clone(), config.server.port))
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind((
+        app_state.config.server.ip.as_str(),
+        app_state.config.server.port,
+    ))
+    .await?;
 
     info!(
         "Serving the app at {}:{}",
-        config.server.ip, config.server.port
+        app_state.config.server.ip, app_state.config.server.port
     );
     axum::serve(listener, app).await.unwrap();
 
