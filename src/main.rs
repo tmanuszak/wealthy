@@ -1,4 +1,4 @@
-use axum::Router;
+use tower_http::trace::TraceLayer;
 use tracing::info;
 
 mod config;
@@ -14,15 +14,18 @@ async fn main() -> color_eyre::Result<()> {
     // Setup error reporting
     color_eyre::install()?;
 
+    // Load env vars
+    dotenvy::dotenv()?;
+
     // Setup tracing
     tracing_subscriber::fmt::init();
 
     let app_state = state::init_state().await?;
 
     // Build the app
-    let app = Router::new()
-        .merge(routes::create_routes())
-        .with_state(app_state.clone());
+    let app = routes::create_routes()
+        .with_state(app_state.clone())
+        .layer(TraceLayer::new_for_http());
 
     let listener = tokio::net::TcpListener::bind((
         app_state.config.server.ip.as_str(),

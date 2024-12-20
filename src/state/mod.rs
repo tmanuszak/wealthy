@@ -1,12 +1,11 @@
+use sqlx::PgPool;
 use std::sync::Arc;
-
-use sqlx::{Pool, Postgres};
 use tap::Pipe;
 
 #[derive(Clone)]
 pub struct AppState {
     pub config: Arc<crate::config::Config>,
-    pub db_pool: Arc<Pool<Postgres>>,
+    pub db_pool: Arc<PgPool>,
 }
 
 pub async fn init_state() -> color_eyre::Result<AppState> {

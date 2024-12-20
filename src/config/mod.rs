@@ -1,5 +1,6 @@
 use color_eyre::eyre::Ok;
 use serde::Deserialize;
+use tap::prelude::*;
 
 #[derive(Deserialize, Clone)]
 pub struct Config {
@@ -19,7 +20,14 @@ pub struct ServerConfig {
 }
 
 pub async fn get_config() -> color_eyre::Result<Config> {
-    let config_file = tokio::fs::read_to_string("config.toml").await?;
-    let config = toml::from_str(&config_file)?;
-    Ok(config)
+    Config {
+        database: DatabaseConfig {
+            url: dotenvy::var("DATABASE_URL")?,
+        },
+        server: ServerConfig {
+            ip: dotenvy::var("SERVER_IP")?,
+            port: dotenvy::var("SERVER_PORT")?.parse::<u16>()?,
+        },
+    }
+    .pipe(Ok)
 }
