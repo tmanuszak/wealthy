@@ -14,9 +14,6 @@ async fn main() -> color_eyre::Result<()> {
     // Setup error reporting
     color_eyre::install()?;
 
-    // Load env vars
-    dotenvy::dotenv()?;
-
     // Setup tracing
     tracing_subscriber::fmt::init();
 
