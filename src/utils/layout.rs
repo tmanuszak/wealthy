@@ -16,6 +16,7 @@ where
                     meta charset="UTF-8";
                     title { (title) }
                     link rel="stylesheet" href="/static/css/style.css";
+                    script src="/static/htmx.min.js" {}
                 }
                 body {
                     (self)

@@ -23,22 +23,26 @@ RUN mkdir -p $NVM_DIR \
 # Update path so that nvm and node are available
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# Copy the Cargo.toml and Cargo.lock files first
-COPY Cargo.toml Cargo.lock ./
-
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+# Copy package.json
+COPY package.json .
 
 # Install npm deps
 RUN npm install
 
-# Copy rest of project
-COPY . .
+# Copy the Cargo.toml
+COPY Cargo.toml .
 
-# Set environment variables for the build
-ENV SQLX_OFFLINE true
+RUN mkdir ./src && echo 'fn main() {}' > ./src/main.rs
+RUN cargo build --release
 
-# Build for release
+# Build the stylesheet
+COPY src src
+COPY static static
+COPY postcss.config.js tailwind.config.js .
+RUN npm run build:css
+
+# Build the app
+RUN touch ./src/main.rs
 RUN cargo build --release
 
 # ===== Runtime Stage =====
@@ -55,9 +59,6 @@ WORKDIR /usr/local/bin
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /usr/src/app/target/release/wealthy .
-
-# Copy the static files (e.g., compiled CSS)
-COPY --from=builder /usr/src/app/static ./static
 
 # Expose the port your application runs on (e.g., 8080)
 EXPOSE ${SERVER_PORT}
