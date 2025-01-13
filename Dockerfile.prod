@@ -1,0 +1,66 @@
+# ===== Builder Stage =====
+FROM rust:bookworm AS builder
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    curl
+
+# Set environment variables for nvm and Node.js
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 20.18.1
+
+# Install nvm and Node.js
+RUN mkdir -p $NVM_DIR \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION
+
+# Update PATH so nvm and Node.js are available
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Install npm dependencies
+RUN npm install
+
+# Copy Cargo.toml and Cargo.lock
+COPY Cargo.toml Cargo.lock ./
+
+# Build dependencies to cache them
+RUN mkdir src
+RUN echo "fn main() {}" > src/main.rs
+RUN cargo build --release
+RUN rm -rf src
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the application
+RUN cargo build --release
+
+# ===== Runtime Stage =====
+FROM debian:bookworm
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR /usr/local/bin
+
+# Copy the compiled binary and any necessary assets from the builder stage
+COPY --from=builder /usr/src/app/target/release/wealthy .
+
+# Expose the application port
+EXPOSE ${SERVER_PORT}
+
+# Set the entrypoint
+CMD ["./wealthy"]

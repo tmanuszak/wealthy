@@ -2,25 +2,29 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: wealthy-app
+      dockerfile: Dockerfile.dev
+    container_name: wealthy-app-dev
     depends_on:
       db:
         condition: service_healthy
     environment:
       RUST_LOG: 'DEBUG'
-      RUST_BACKTRACE: '1'
+      RUST_BACKTRACE: 'full'
       SERVER_IP: '${SERVER_IP}'
       SERVER_PORT: '${SERVER_PORT}'
       DATABASE_URL: 'postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}'
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+    volumes:
+      - .:/usr/src/app  # Mount the current directory into the container
+      - cargo-cache:/usr/local/cargo/registry  # Cache Cargo registry
+      - target-cache:/usr/src/app/target       # Cache the target folder for Rust compilation
     networks:
       - backend
 
   db:
     image: postgres:17
-    container_name: wealthy-db
+    container_name: wealthy-db-dev
     environment:
       POSTGRES_USER: '${DATABASE_USER}'
       POSTGRES_PASSWORD: '${DATABASE_PASSWORD}'
@@ -33,13 +37,15 @@ services:
     ports:
       - "${DATABASE_PORT}:${DATABASE_PORT}"
     volumes:
-      - wealthy-vol:/var/lib/postgresql/data
+      - wealthy-db-data-dev:/var/lib/postgresql/data
       - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - backend
 
 volumes:
-  wealthy-vol:
+  cargo-cache:
+  target-cache:
+  wealthy-db-data-dev:
 
 networks:
   backend:

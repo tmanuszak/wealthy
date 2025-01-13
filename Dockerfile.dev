@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 # Install system dependencies required for SQLx, Postgres, and Node.js
 RUN apt-get update && apt-get install -y \
     libpq-dev \
-    curl
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set env variables for nvm and node.js
 ENV NVM_DIR /usr/local/nvm
@@ -30,38 +31,14 @@ COPY package.json .
 RUN npm install
 
 # Copy the Cargo.toml
-COPY Cargo.toml .
+COPY Cargo.toml Cargo.lock .
 
 RUN mkdir ./src && echo 'fn main() {}' > ./src/main.rs
 RUN cargo build --release
-
-# Build the stylesheet
-COPY src src
-COPY static static
-COPY postcss.config.js tailwind.config.js .
-RUN npm run build:css
-
-# Build the app
-RUN touch ./src/main.rs
-RUN cargo build --release
-
-# ===== Runtime Stage =====
-FROM debian:bookworm
-
-# Install needed runtime libraries
-RUN apt-get update && apt-get install -y \
-    libpq5 \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set the working directory
-WORKDIR /usr/local/bin
-
-# Copy the compiled binary from the builder stage
-COPY --from=builder /usr/src/app/target/release/wealthy .
+RUN rm -rf src
 
 # Expose the port your application runs on (e.g., 8080)
 EXPOSE ${SERVER_PORT}
 
 # Set the entrypoint
-CMD ["./wealthy"]
+CMD ["cargo", "run", "--release"]

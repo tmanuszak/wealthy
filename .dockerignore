@@ -1,0 +1,6 @@
+target
+node_modules
+.git
+Dockerfile*
+docker-compose.*
+.env

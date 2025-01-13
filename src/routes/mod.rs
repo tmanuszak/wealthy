@@ -24,7 +24,7 @@ async fn root_handler() -> Result<Markup> {
             p class="mt-4 text-lg" {
                 "This is a page styled with Tailwind CSS."
             }
-            button class="bg-blue-500 hover:bg-bloe-700 text-white font-bold py-2 px-4 rounded" hx-get="/add_element" hx-trigger="click" hx-swap="afterend" { "Add Element" }
+            button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" hx-get="/add_element" hx-trigger="click" hx-swap="afterend" { "Add Element" }
         }
     }
     .page("Axum with Tailwind and HTMX")
@@ -33,7 +33,7 @@ async fn root_handler() -> Result<Markup> {
 
 async fn add_element() -> Result<Markup> {
     maud::html! {
-        div class="bg-red-700 h-5 w-5 m-5" {}
+        div class="bg-green-700 h-5 w-5 m-5" {}
     }
     .pipe(Ok)
 }
