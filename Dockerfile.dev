@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+RUN cargo install watchexec-cli
+
 # Set env variables for nvm and node.js
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 20.18.1
@@ -31,14 +33,10 @@ COPY package.json .
 RUN npm install
 
 # Copy the Cargo.toml
-COPY Cargo.toml Cargo.lock .
-
-RUN mkdir ./src && echo 'fn main() {}' > ./src/main.rs
-RUN cargo build --release
-RUN rm -rf src
+COPY Cargo.toml build.rs tailwind.config.js postcss.config.js .
 
 # Expose the port your application runs on (e.g., 8080)
 EXPOSE ${SERVER_PORT}
 
 # Set the entrypoint
-CMD ["cargo", "run", "--release"]
+CMD ["watchexec", "-w", "src", "--restart", "cargo", "run"]

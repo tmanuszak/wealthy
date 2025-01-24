@@ -33,7 +33,7 @@ async fn root_handler() -> Result<Markup> {
 
 async fn add_element() -> Result<Markup> {
     maud::html! {
-        div class="bg-green-700 h-5 w-5 m-5" {}
+        div class="bg-cyan-700 h-5 w-5 m-5" {}
     }
     .pipe(Ok)
 }

@@ -16,7 +16,8 @@ services:
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     volumes:
-      - .:/usr/src/app  # Mount the current directory into the container
+      - ./src:/usr/src/app/src  # Mount the current directory into the container
+      - ./static:/usr/src/app/static
       - cargo-cache:/usr/local/cargo/registry  # Cache Cargo registry
       - target-cache:/usr/src/app/target       # Cache the target folder for Rust compilation
     networks:

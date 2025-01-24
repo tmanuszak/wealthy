@@ -1,10 +1,7 @@
 use std::process::Command;
 
 fn main() {
-    println!("cargo:rerun-if-changed=src");
-    println!("cargo:rerun-if-changed=static");
-
-    print!("Building tailwind stylesheet.");
+    println!("Building tailwind stylesheet.");
     let status = Command::new("npm")
         .args(&["run", "build:css"])
         .status()
