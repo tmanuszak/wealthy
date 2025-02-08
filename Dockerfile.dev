@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN cargo install watchexec-cli
+RUN cargo install --locked watchexec-cli
 
 # Set env variables for nvm and node.js
 ENV NVM_DIR /usr/local/nvm
@@ -25,15 +25,6 @@ RUN mkdir -p $NVM_DIR \
 
 # Update path so that nvm and node are available
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-
-# Copy package.json
-COPY package.json .
-
-# Install npm deps
-RUN npm install
-
-# Copy the Cargo.toml
-COPY Cargo.toml build.rs tailwind.config.js postcss.config.js .
 
 # Expose the port your application runs on (e.g., 8080)
 EXPOSE ${SERVER_PORT}

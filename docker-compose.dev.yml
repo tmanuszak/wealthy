@@ -16,10 +16,20 @@ services:
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     volumes:
-      - ./src:/usr/src/app/src  # Mount the current directory into the container
-      - ./static:/usr/src/app/static
+      # Cache build artifact folders for faster builds
       - cargo-cache:/usr/local/cargo/registry  # Cache Cargo registry
       - target-cache:/usr/src/app/target       # Cache the target folder for Rust compilation
+      - node-cache:/usr/src/app/node_modules   # Cache the node_modules directory
+      # Bind mount source directories and build artifacts to be committed via git
+      - ./src:/usr/src/app/src
+      - ./static:/usr/src/app/static
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./build.rs:/usr/src/app/build.rs
+      - ./postcss.config.js:/usr/src/app/postcss.config.js
+      - ./tailwind.config.js:/usr/src/app/tailwind.config.js
+      - ./Cargo.toml:/usr/src/app/Cargo.toml
+      - ./Cargo.lock:/usr/src/app/Cargo.lock
     networks:
       - backend
 
@@ -46,6 +56,7 @@ services:
 volumes:
   cargo-cache:
   target-cache:
+  node-cache:
   wealthy-db-data-dev:
 
 networks:

@@ -4,7 +4,12 @@ module.exports = {
     './src/**/*.{html,rs}'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Inter'],
+        mono: ['JetBrains Mono'],
+      },
+    },
   },
   plugins: [],
 }
