@@ -2,11 +2,12 @@ use std::path::Path;
 use std::process::Command;
 
 fn main() {
-    println!("cargo::rerun-if-changed=build.rs");
+    println!("cargo::rerun-if-changed=./build.rs");
     println!("cargo::rerun-if-changed=static/");
-    println!("cargo::rerun-if-changed=tailwind.config.js");
+    println!("cargo::rerun-if-changed=./tailwind.config.js");
+    println!("cargo::rerun-if-changed=src/");
 
-    if Path::new("./node_modules").exists() {
+    if !Path::new("./node_modules").exists() {
         let status = Command::new("npm")
             .args(&["install"])
             .status()

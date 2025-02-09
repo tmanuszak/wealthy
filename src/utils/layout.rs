@@ -22,7 +22,8 @@ where
                     link rel="stylesheet" href="/static/css/style.css";
                     script src="/static/htmx.min.js" {}
                 }
-                body {
+                body class="flex h-screen bg-stone-200" {
+                    (crate::components::get_sidebar())
                     (self)
                 }
             }

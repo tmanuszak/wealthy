@@ -5,6 +5,7 @@ pub mod layout;
 
 #[derive(Debug)]
 pub enum Error {
+    #[allow(dead_code)]
     Markup { status: StatusCode, content: Markup },
     // Add other types of errors here
 }

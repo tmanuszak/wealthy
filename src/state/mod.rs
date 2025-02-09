@@ -5,6 +5,7 @@ use tap::Pipe;
 #[derive(Clone)]
 pub struct AppState {
     pub config: Arc<crate::config::Config>,
+    #[allow(dead_code)]
     pub db_pool: Arc<PgPool>,
 }
 

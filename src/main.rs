@@ -1,6 +1,7 @@
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
+mod components;
 mod config;
 mod db;
 mod models;

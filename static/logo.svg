@@ -1,0 +1,8 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="fill-current">
+    <!-- Top Coin -->
+    <ellipse cx="16" cy="10" rx="10" ry="4" stroke-width="2" fill="none"/>
+    <!-- Coin Stack -->
+    <path d="M6 10 V18 C6 20 12 22 16 22 C20 22 26 20 26 18 V10" stroke-width="2" fill="none"/>
+    <!-- Middle Ellipse -->
+    <path d="M6 14 C6 16 12 18 16 18 C20 18 26 16 26 14" stroke-width="2" fill="none"/>
+</svg>
