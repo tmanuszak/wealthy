@@ -6,3 +6,8 @@
   - Take the oklch value and turn it into a tailwind color palette with this tool: https://tailwindcss-oklch-color-palette-generator.vercel.app/
 - TODO: 
   - Find green and red success/failure colors
+
+  Maybe a desktop app using tauri?
+
+  Name change: feyenance.app
+  Use this logo: https://icones.js.org/collection/all?s=eye&icon=game-icons:eyeball
